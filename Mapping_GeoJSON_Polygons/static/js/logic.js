@@ -22,51 +22,38 @@ let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/sate
 // Create a base layer that holds both maps
 let baseMaps = {
     Streets: streets,
-    Satellite: satelliteStreets
+    'Satellite Streets': satelliteStreets
 };
-  
+
 // Create the map object with center, zoom level and default layer
 let map = L.map('mapid', {
-    center: [39.5, -98.5],
-    zoom: 3,
+    center: [43.7, -79.3],
+    zoom: 11,
     layers: [streets]
-});
+})
 
-// Pass our map layers into our layers control and add the layers control to the map
+// Pass our map layers into our layers control and add the layers control to the map.
 L.control.layers(baseMaps).addTo(map);
 
-// Retrieve the earthquake GeoJSON data
-d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(data => {
+// Accessing the Toronto neighborhoods GeoJSON URL
+let torontoHoods = "https://raw.githubusercontent.com/npantfoerder/mapping-earthquakes/master/torontoNeighborhoods.json";
+
+// Create a style for the lines
+let myStyle = {
+    color: 'blue',
+    fillColor: '#ffffa1',
+    weight: 1
+}
+
+// Grabbing our GeoJSON data
+d3.json(torontoHoods).then(data => {
+    console.log(data);
     // Creating a GeoJSON layer with the retrieved data
     L.geoJson(data, {
-       // Turn each feature into a circleMarker on the map
-       pointToLayer: function(feature, latlng) {
-           console.log('data', data);
-           return L.circleMarker(latlng);
-        },
-        // Set the style for each circleMarker using the styleInfo function
-        style: styleInfo
+        style: myStyle,
+        // Adding popup markers
+        onEachFeature: function(feature, layer) {
+            layer.bindPopup("<h2> Neighborhood: " + feature.properties.AREA_NAME + "</h2>");
+        }
     }).addTo(map);
 });
-
-// Define a function that returns the style data for each earthquake
-function styleInfo(feature) {
-    return {
-        opacity: 1,
-        fillOpacity: 1,
-        fillColor: "#ffae42",
-        color: "#000000",
-        radius: getRadius(feature.properties.mag),
-        stroke: true,
-        weight: 0.5
-    };
-};
-
-// Define a function that determines the radius of the earthquake marker based on its magnitude
-function getRadius(magnitude) {
-    // If the earthqake has a magnitude of 0, then plot it with a radius of 1
-    if (magnitude === 0) {
-        return 1;
-    }
-    return magnitude * 4;
-};
