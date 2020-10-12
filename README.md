@@ -7,6 +7,8 @@ A hypothetical company, Disaster Reporting Network, provides data driven storyte
 - Plot the data on a Mapbox map through an API request
 - Add fault lines to illustrate the relationship between the location and frequency of seismic activity and tectonic plates 
 
+<img src='https://github.com/npantfoerder/mapping-earthquakes/blob/master/EarthquakeMap.png' width=200>
+
 ### Resources
 - Data Sources: 
   - Real-time earthquake data from https://www.usgs.gov/natural-hazards/earthquake-hazards/data-tools
